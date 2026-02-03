@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Invitación XV Años - Bárbara</title>
+    <style>
+        /* ===== ESTILOS PRINCIPALES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background-color: #f5f5dc;
+            font-family: 'Arial', sans-serif;
+            color: #5d4037;
+            overflow-x: hidden;
+            touch-action: pan-y;
+            -webkit-user-select: none;
+            user-select: none;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* ===== CONTENEDOR DE LA IMAGEN ===== */
+        .contenedor-imagen {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f5f5dc;
+            position: relative;
+            padding-top: 80px; /* Espacio para el temporizador */
+        }
+        
+        /* ===== IMAGEN PNG ===== */
+        #imagen-invitacion {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* ===== TEMPORIZADOR (ESQUINA SUPERIOR DERECHA) ===== */
+        .temporizador {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(139, 115, 85, 0.95);
+            color: #f5f5dc;
+            padding: 15px 20px;
+            border-radius: 15px;
+            z-index: 1000;
+            text-align: center;
+            min-width: 180px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid #8d6e63;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        .temporizador-titulo {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: #ffecb3;
+            display: block;
+        }
+        
+        #contador {
+            font-size: 22px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+        
+        .temporizador-fecha {
+            font-size: 12px;
+            margin-top: 5px;
+            color: #d7ccc8;
+            display: block;
+        }
+        
+        /* ===== BOTÓN DE COMPARTIR ===== */
+        .btn-compartir {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #8d6e63;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+        
+        .btn-compartir:hover {
+            background: #6d4c41;
+        }
+        
+        /* ===== RESPONSIVE PARA MÓVILES PEQUEÑOS ===== */
+        @media (max-width: 480px) {
+            .temporizador {
+                top: 10px;
+                right: 10px;
+                min-width: 150px;
+                padding: 12px 15px;
+            }
+            
+            #contador {
+                font-size: 18px;
+            }
+            
+            .contenedor-imagen {
+                padding-top: 70px;
+            }
+            
+            .btn-compartir {
+                bottom: 15px;
+                right: 10px;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- TEMPORIZADOR -->
+    <div class="temporizador">
+        <span class="temporizador-titulo">🎉 FALTAN 🎉</span>
+        <div id="contador">00:00:00:00</div>
+        <span class="temporizador-fecha">7 de Marzo 2026 • 8:00 PM</span>
+    </div>
+    
+    <!-- BOTÓN DE COMPARTIR -->
+    <button class="btn-compartir" id="btnCompartir">
+        <span>📱</span> Compartir
+    </button>
+    
+    <!-- CONTENEDOR DE LA IMAGEN -->
+    <div class="contenedor-imagen">
+        <!-- IMAGEN PNG - NOMBRE: invitacion.png -->
+        <img id="imagen-invitacion" src="invitacion.png" alt="Invitación XV Años de Bárbara">
+    </div>
+    
+    <script>
+        // ================= CONFIGURACIÓN =================
+        // FECHA DEL EVENTO: 7 de marzo 2026, 8:00 PM
+        const FECHA_EVENTO = new Date('2026-03-07T20:00:00');
+        
+        // ================= TEMPORIZADOR =================
+        function actualizarTemporizador() {
+            const ahora = new Date();
+            const diferencia = FECHA_EVENTO - ahora;
+            
+            if (diferencia > 0) {
+                const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+                
+                document.getElementById('contador').textContent = 
+                    `${dias.toString().padStart(2, '0')}:` +
+                    `${horas.toString().padStart(2, '0')}:` +
+                    `${minutos.toString().padStart(2, '0')}:` +
+                    `${segundos.toString().padStart(2, '0')}`;
+                    
+                // Cambiar color cuando falten menos de 24 horas
+                if (dias === 0 && horas < 24) {
+                    document.getElementById('contador').style.color = '#ff9800';
+                    document.querySelector('.temporizador').style.background = 'rgba(255, 152, 0, 0.9)';
+                }
+                
+                // Cambiar color cuando falten menos de 1 hora
+                if (dias === 0 && horas === 0 && minutos < 60) {
+                    document.getElementById('contador').style.color = '#f44336';
+                    document.querySelector('.temporizador').style.background = 'rgba(244, 67, 54, 0.9)';
+                }
+            } else {
+                // El evento ya comenzó
+                document.getElementById('contador').textContent = "¡HA COMENZADO!";
+                document.getElementById('contador').style.color = '#4caf50';
+                document.getElementById('contador').style.fontSize = '24px';
+                document.querySelector('.temporizador').style.background = 'rgba(76, 175, 80, 0.9)';
+                document.querySelector('.temporizador-titulo').textContent = "🎊 ¡EL EVENTO ESTÁ EN CURSO! 🎊";
+            }
+        }
+        
+        // Iniciar el temporizador (actualizar cada segundo)
+        setInterval(actualizarTemporizador, 1000);
+        actualizarTemporizador(); // Llamada inicial
+        
+        // ================= COMPARTIR =================
+        document.getElementById('btnCompartir').addEventListener('click', function() {
+            if (navigator.share) {
+                // Usar la API de compartir nativa en móviles
+                navigator.share({
+                    title: 'Invitación XV Años - Bárbara',
+                    text: '¡Te invito a mis XV años! 🎉',
+                    url: window.location.href
+                }).then(() => {
+                    console.log('Contenido compartido exitosamente');
+                }).catch(error => {
+                    console.log('Error al compartir:', error);
+                    copiarEnlace();
+                });
+            } else {
+                // Fallback para navegadores que no soportan navigator.share
+                copiarEnlace();
+            }
+        });
+        
+        function copiarEnlace() {
+            // Copiar el enlace al portapapeles
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const originalText = document.getElementById('btnCompartir').innerHTML;
+                document.getElementById('btnCompartir').innerHTML = '<span>✅</span> ¡Copiado!';
+                
+                // Restaurar el texto original después de 2 segundos
+                setTimeout(() => {
+                    document.getElementById('btnCompartir').innerHTML = originalText;
+                }, 2000);
+            }).catch(error => {
+                console.error('Error al copiar:', error);
+                alert('Copia este enlace: ' + window.location.href);
+            });
+        }
+        
+        // ================= BLOQUEO DE ZOOM =================
+        // Bloquear zoom con dos dedos
+        document.addEventListener('touchstart', function(evento) {
+            if (evento.touches.length > 1) {
+                evento.preventDefault();
+                evento.stopPropagation();
+                return false;
+            }
+        }, { passive: false });
+        
+        // Bloquear gestos de pellizco
+        document.addEventListener('gesturestart', function(evento) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            return false;
+        });
+        
+        document.addEventListener('gesturechange', function(evento) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            return false;
+        });
+        
+        // Bloquear zoom con Ctrl + rueda del ratón
+        document.addEventListener('wheel', function(evento) {
+            if (evento.ctrlKey) {
+                evento.preventDefault();
+                evento.stopPropagation();
+                return false;
+            }
+        }, { passive: false });
+        
+        // Configuración especial para iOS
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            document.documentElement.style.touchAction = 'pan-y';
+            document.documentElement.style.webkitUserSelect = 'none';
+            document.documentElement.style.webkitTouchCallout = 'none';
+        }
+        
+        // ================= VERIFICACIÓN DE ARCHIVOS =================
+        // Verificar que la imagen cargue correctamente
+        const imagen = document.getElementById('imagen-invitacion');
+        imagen.onload = function() {
+            console.log("✅ Imagen cargada correctamente: " + this.naturalWidth + "x" + this.naturalHeight + "px");
+            
+            // Ajustar automáticamente el ancho si la imagen es menor a 800px
+            if (this.naturalWidth < 800) {
+                this.style.maxWidth = this.naturalWidth + 'px';
+            }
+        };
+        
+        imagen.onerror = function() {
+            console.error("❌ Error: No se pudo cargar 'invitacion.png'");
+            this.alt = "Error: No se encontró el archivo 'invitacion.png'. Asegúrate de que esté en la misma carpeta que este archivo HTML.";
+            this.style.border = "3px dashed #f44336";
+            this.style.padding = "20px";
+        };
+        
+        // ================= INICIALIZACIÓN =================
+        console.log("🎉 Invitación XV Años - Cargada exitosamente");
+        console.log("👑 Para: Bárbara");
+        console.log("📅 Evento: 7 de Marzo 2026, 8:00 PM");
+        console.log("🖼️ Imagen esperada: invitacion.png");
+        console.log("📱 Dispositivo detectado: " + navigator.userAgent);
+        
+    </script>
+</body>
+</html>
